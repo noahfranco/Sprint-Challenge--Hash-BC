@@ -25,7 +25,10 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     proof = 0
     #  TODO: Your code here
-
+    last_hash = hashlib.sha256(f"{last_proof}".encode()).hexdigest()
+    # check valid proof (prev hash and current hash doesn't fit) if false then increment proof
+    while valid_proof(last_hash, proof) is False:
+        proof += 1
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -36,11 +39,14 @@ def valid_proof(last_hash, proof):
     Validates the Proof:  Multi-ouroborus:  Do the last six characters of
     the hash of the last proof match the first six characters of the hash
     of the new proof?
-
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
 
     # TODO: Your code here!
+    guess = f'{proof}'.encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
+    return guess_hash[:6] == last_hash[-6:]
+
 
 if __name__ == '__main__':
     # What node are we interacting with?
@@ -77,5 +83,3 @@ if __name__ == '__main__':
             print("Total coins mined: " + str(coins_mined))
         else:
             print(data.get('message'))
-
-
